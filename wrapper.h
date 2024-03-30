@@ -28,7 +28,7 @@
 #include <cvodes/cvodes.h>
 #endif
 
-#if USE_IDA & !USE_IDAS
+#if USE_IDA
 #include <ida/ida.h>
 #endif
 
