@@ -12,6 +12,10 @@
 #include <sunnonlinsol/sunnonlinsol_fixedpoint.h>
 #include <sunnonlinsol/sunnonlinsol_newton.h>
 
+#if USE_KLU
+#include <sunlinsol/sunlinsol_klu.h>
+#endif
+
 #if USE_OPENMP
 #include <nvector/nvector_openmp.h>
 #endif
@@ -24,7 +28,7 @@
 #include <cvodes/cvodes.h>
 #endif
 
-#if USE_IDA
+#if USE_IDA & !USE_IDAS
 #include <ida/ida.h>
 #endif
 
@@ -35,8 +39,3 @@
 #if USE_KINSOL
 #include <kinsol/kinsol.h>
 #endif
-
-#if USE_KLU
-#include <sunlinsol/sunlinsol_klu.h>
-#endif
-

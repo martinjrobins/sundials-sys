@@ -1,5 +1,9 @@
-use bindgen::{BindgenError, Bindings};
+use bindgen::{
+    callbacks::{MacroParsingBehavior, ParseCallbacks},
+    BindgenError, Bindings,
+};
 use std::{
+    collections::HashSet,
     env,
     fs::File,
     io::{BufReader, Read},
@@ -18,6 +22,49 @@ impl bindgen::callbacks::ParseCallbacks for ParseSignedConstants {
             "CV" | "IDA" | "KIN" | "SUN" => Some(bindgen::callbacks::IntKind::Int),
             _ => None,
         }
+    }
+}
+
+// Ignore some math enums (see https://github.com/rust-lang/rust-bindgen/issues/687#issuecomment-1312298570)
+const IGNORE_MACROS: [&str; 20] = [
+    "FE_DIVBYZERO",
+    "FE_DOWNWARD",
+    "FE_INEXACT",
+    "FE_INVALID",
+    "FE_OVERFLOW",
+    "FE_TONEAREST",
+    "FE_TOWARDZERO",
+    "FE_UNDERFLOW",
+    "FE_UPWARD",
+    "FP_INFINITE",
+    "FP_INT_DOWNWARD",
+    "FP_INT_TONEAREST",
+    "FP_INT_TONEARESTFROMZERO",
+    "FP_INT_TOWARDZERO",
+    "FP_INT_UPWARD",
+    "FP_NAN",
+    "FP_NORMAL",
+    "FP_SUBNORMAL",
+    "FP_ZERO",
+    "IPPORT_RESERVED",
+];
+
+#[derive(Debug)]
+struct IgnoreMacros(HashSet<String>);
+
+impl ParseCallbacks for IgnoreMacros {
+    fn will_parse_macro(&self, name: &str) -> MacroParsingBehavior {
+        if self.0.contains(name) {
+            MacroParsingBehavior::Ignore
+        } else {
+            MacroParsingBehavior::Default
+        }
+    }
+}
+
+impl IgnoreMacros {
+    fn new() -> Self {
+        Self(IGNORE_MACROS.into_iter().map(|s| s.to_owned()).collect())
     }
 }
 
@@ -131,7 +178,8 @@ fn generate_bindings(inc_dir: &Option<String>) -> Result<Bindings, BindgenError>
             define!("nvecpthreads", PTHREADS),
             define!("klu", KLU),
         ])
-        .parse_callbacks(Box::new(ParseSignedConstants));
+        .parse_callbacks(Box::new(ParseSignedConstants))
+        .parse_callbacks(Box::new(IgnoreMacros::new()));
 
     #[cfg(feature = "klu")]
     let builder = match inc_dir {
