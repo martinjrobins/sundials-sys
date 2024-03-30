@@ -30,6 +30,7 @@ default = ["arkode", "cvode", "ida", "kinsol"]
 static_libraries = []
 build_libraries = []
 arkode = []
+klu = []
 cvode = []
 cvodes = []
 ida = []
@@ -42,4 +43,4 @@ nvecpthreads = []
 
 [package.metadata.docs.rs]
 
-features = ["static_libraries", "build_libraries", "arkode", "cvode", "cvodes", "ida", "idas", "kinsol", "nvecopenmp", "nvecpthreads"]
+features = ["static_libraries", "build_libraries", "arkode", "cvode", "cvodes", "ida", "idas", "kinsol", "nvecopenmp", "nvecpthreads", "klu"]
