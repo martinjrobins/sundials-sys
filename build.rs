@@ -137,10 +137,12 @@ fn build_vendor_sundials() -> (Option<String>, Option<String>, &'static str) {
         .define("PTHREAD_ENABLE", feature!("nvecpthreads"));
 
     #[cfg(feature = "klu")]
-    let (ss_lib_loc, ss_inc_dir) = build_suitesparse();
-    config
-        .define("KLU_LIBRARY_DIR", ss_lib_loc.unwrap())
-        .define("KLU_INCLUDE_DIR", ss_inc_dir.unwrap());
+    {
+        let (ss_lib_loc, ss_inc_dir) = build_suitesparse();
+        config
+            .define("KLU_LIBRARY_DIR", ss_lib_loc.unwrap())
+            .define("KLU_INCLUDE_DIR", ss_inc_dir.unwrap());
+    }
 
     let dst = config.build();
 
