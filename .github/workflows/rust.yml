@@ -63,7 +63,7 @@ jobs:
       run: |
         git clone https://github.com/microsoft/vcpkg
         & .\vcpkg\bootstrap-vcpkg.bat
-        & .\vcpkg\vcpkg install sundials --triplet=x64-windows
+        & .\vcpkg\vcpkg install sundials[klu] --triplet=x64-windows --feature-flags=registries
     - name: Install Ubuntu packages
       if: startsWith(matrix.os, 'ubuntu') && ! contains(matrix.build, 'vendor')
       run: |
@@ -72,5 +72,5 @@ jobs:
       run: rustup update ${{ matrix.rust }} --no-self-update && rustup default ${{ matrix.rust }}
       shell: bash
     - run: rustup target add ${{ matrix.target }}
-    - run: cargo build
-    - run: cargo test
+    - run: cargo build --features klu
+    - run: cargo test --features klu
