@@ -63,11 +63,11 @@ jobs:
       run: |
         git clone https://github.com/microsoft/vcpkg
         & .\vcpkg\bootstrap-vcpkg.bat
-        & .\vcpkg\vcpkg install sundials[klu] --triplet=x64-windows --feature-flags=registries
+        & .\vcpkg\vcpkg install
     - name: Install Ubuntu packages
       if: startsWith(matrix.os, 'ubuntu') && ! contains(matrix.build, 'vendor')
       run: |
-        sudo apt-get update && sudo apt-get -y install libsundials-dev
+        sudo apt-get update && sudo apt-get -y install libsundials-dev libsuitesparse-dev
     - name: Install Rust (rustup)
       run: rustup update ${{ matrix.rust }} --no-self-update && rustup default ${{ matrix.rust }}
       shell: bash

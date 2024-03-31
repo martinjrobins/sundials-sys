@@ -1,0 +1,13 @@
+{
+    "name": "sundials-sys",
+    "version-string": "0.4",
+    "dependencies": [
+        {
+            "name": "sundials",
+            "default-features": false,
+            "features": [
+                "klu"
+            ]
+        }
+    ]
+}
