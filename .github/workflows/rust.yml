@@ -69,7 +69,7 @@ jobs:
       run: |
         sudo apt-get update && sudo apt-get -y install libsundials-dev libsuitesparse-dev
     - name: Install Ubuntu packages (vendor)
-      if: startsWith(matrix.os, 'ubuntu') && ! contains(matrix.build, 'vendor')
+      if: startsWith(matrix.os, 'ubuntu') && contains(matrix.build, 'vendor')
       run: |
         sudo apt-get update && sudo apt-get -y install libopenblas-dev
     - name: Install Rust (rustup)
