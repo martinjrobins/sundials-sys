@@ -201,10 +201,10 @@ fn sundials_major_version(bindings: impl AsRef<Path>) -> Option<u32> {
             match b.next() {
                 Some(Ok(c)) => {
                     if c != c0 {
-                        continue 'version;
+                        continue 'version
                     }
                 }
-                Some(Err(_)) | None => return None,
+                Some(Err(_)) | None => return None
             }
         }
         // Match " : u32 = 6"
