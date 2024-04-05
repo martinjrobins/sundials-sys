@@ -152,7 +152,8 @@ fn build_vendor_sundials() -> (Option<String>, Option<String>, &'static str) {
     (lib_loc, inc_dir, library_type)
 }
 
-fn generate_bindings(inc_dir: &Option<String>) -> Result<Bindings, BindgenError> {
+fn generate_bindings(inc_dir: &Option<String>)
+                     -> Result<Bindings, BindgenError> {
     macro_rules! define {
         ($a:tt, $b:tt) => {
             format!(
@@ -210,15 +211,15 @@ fn sundials_major_version(bindings: impl AsRef<Path>) -> Option<u32> {
         if b.find(|c| c.as_ref().is_ok_and(|&c| c == b'=')).is_some() {
             let is_not_digit = |c: &u8| !c.is_ascii_digit();
             let b = b.skip_while(|c| c.as_ref().is_ok_and(is_not_digit));
-            let v: Vec<_> = b
-                .map_while(|c| c.ok().filter(|c| c.is_ascii_digit()))
+            let v: Vec<_> =
+                b.map_while(|c| c.ok().filter(|c| c.is_ascii_digit()))
                 .collect();
             match String::from_utf8(v) {
                 Ok(v) => return v.parse().ok(),
-                Err(_) => return None,
+                Err(_) => return None
             }
         }
-        return None;
+        return None
     }
     None
 }
@@ -237,8 +238,7 @@ fn main() {
     }
 
     if lib_loc.is_none() && inc_dir.is_none() {
-        #[cfg(target_family = "windows")]
-        {
+        #[cfg(target_family = "windows")] {
             let vcpkg = vcpkg::Config::new()
                 .emit_includes(true)
                 .find_package("sundials");
@@ -250,21 +250,18 @@ fn main() {
 
     // Second, we use bindgen to generate the Rust types
 
-    let bindings_rs = PathBuf::from(env::var("OUT_DIR").unwrap()).join("bindings.rs");
+    let bindings_rs = PathBuf::from(env::var("OUT_DIR").unwrap())
+        .join("bindings.rs");
     let mut build_vendor = true;
     if let Ok(bindings) = generate_bindings(&inc_dir) {
-        bindings
-            .write_to_file(&bindings_rs)
+        bindings.write_to_file(&bindings_rs)
             .expect("Couldn't write file bindings.rs!");
         if let Some(v) = sundials_major_version(&bindings_rs) {
             if v >= 6 {
                 build_vendor = false
             } else {
-                println!(
-                    "cargo:warning=System sundials version = \
-                          {} < 6, will use the vendor version",
-                    v
-                );
+                println!("cargo:warning=System sundials version = \
+                          {} < 6, will use the vendor version", v);
             }
         }
     }
@@ -311,7 +308,7 @@ fn main() {
     }
 
     link! {"arkode", "cvode", "cvodes", "ida", "idas", "kinsol",
-    "nvecopenmp", "nvecpthreads"}
+           "nvecopenmp", "nvecpthreads"}
 
     // And that's all.
 }
