@@ -196,7 +196,8 @@ fn generate_bindings(inc_dir: &Option<String>)
 fn sundials_major_version(bindings: impl AsRef<Path>) -> Option<u32> {
     let b = File::open(bindings).expect("Couldn't read file bindings.rs!");
     let mut b = BufReader::new(b).bytes();
-    'version: while b.find(|c| c.as_ref().is_ok_and(|&c| c == b'S')).is_some() {
+    'version:
+    while b.find(|c| c.as_ref().is_ok_and(|&c| c == b'S')).is_some() {
         for c0 in "UNDIALS_VERSION_MAJOR".bytes() {
             match b.next() {
                 Some(Ok(c)) => {
